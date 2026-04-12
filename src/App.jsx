@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DataProvider, useData } from './context/DataContext';
 import api from './services/api';
@@ -169,7 +169,7 @@ function App() {
   return (
     <AuthProvider>
       <DataProvider>
-        <Router basename={import.meta.env.BASE_URL}>
+        <Router>
           <AppContent />
         </Router>
       </DataProvider>
