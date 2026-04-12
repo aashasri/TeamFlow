@@ -3,13 +3,9 @@
 <head>
   <meta charset="utf-8">
   <title>TeamFlow</title>
-  <script>
-    // SPA redirect for GitHub Pages
-    // Saves the current URL to sessionStorage, then redirects to index.html
-    // The script in index.html reads it back and restores the correct route
-    sessionStorage.redirect = location.href;
-    location.replace(location.pathname.split('/').slice(0, 2).join('/') + '/');
-  </script>
+  <meta http-equiv="refresh" content="0; URL='/TeamFlow/'" />
 </head>
-<body></body>
+<body>
+  Redirecting to TeamFlow...
+</body>
 </html>
