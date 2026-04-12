@@ -3,7 +3,7 @@ import { useData } from '../../../context/DataContext';
 
 const DeptGrid = () => {
   const { data } = useData();
-  const deptIcons = { 'Social Media': '📱', 'SEO': '🔍', 'Web Dev': '💻', 'Ads': '📢', 'Blogs': '✍️', 'Reports': '📊', 'Management': '👔' };
+  const deptIcons = { 'Social Media': '📱', 'SEO': '🔍', 'Web Dev': '💻', 'Ads': '📢', 'Bloog': '✍️', 'Reports': '📊', 'Management': '👔' };
 
   return (
     <div className="dept-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>

@@ -68,7 +68,7 @@ const AnalyticsPage = () => {
 
   const DEPT_COLORS = {
     'Social Media': '#0ea5e9', 'SEO': '#10b981', 'Web Dev': '#f59e0b',
-    'Ads': '#ef4444', 'Blogs': '#ec4899', 'Reports': '#6366f1',
+    'Ads': '#ef4444', 'Bloog': '#ec4899', 'Reports': '#6366f1',
   };
 
   return (

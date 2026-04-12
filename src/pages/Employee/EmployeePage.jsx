@@ -504,7 +504,7 @@ const EmployeePage = ({ activePage }) => {
             <SocialCalendar readOnly={false} />
           </div>
         )}
-        {activeTab === 'blogs-sheet' && user?.dept === 'Blogs' && (
+        {activeTab === 'blogs-sheet' && user?.dept === 'Bloog' && (
           <div className="section-wrap anim-fade-in">
             <BlogsSheet />
           </div>

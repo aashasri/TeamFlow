@@ -4,7 +4,7 @@ import { credentialLimiter } from '../../lib/rateLimiter';
 import { validateCredentialForm, getPasswordStrength } from '../../lib/validators';
 import { useData } from '../../context/DataContext';
 
-const DEPT_OPTIONS = ['Social Media', 'SEO', 'Web Dev', 'Ads', 'Blogs', 'Reports', 'Management'];
+const DEPT_OPTIONS = ['Social Media', 'SEO', 'Web Dev', 'Ads', 'Bloog', 'Reports', 'Management'];
 const COLORS       = ['#7c3aed','#0ea5e9','#10b981','#f59e0b','#ef4444','#ec4899','#6366f1'];
 
 const CreateCredentialsModal = ({ onClose }) => {

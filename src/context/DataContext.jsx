@@ -39,7 +39,7 @@ const BASE_DEPARTMENTS = [
   { id: 'd2', name: 'SEO',          color: '#10b981' },
   { id: 'd3', name: 'Web Dev',      color: '#f59e0b' },
   { id: 'd4', name: 'Ads',          color: '#ef4444' },
-  { id: 'd5', name: 'Blogs',        color: '#ec4899' },
+  { id: 'd5', name: 'Bloog',        color: '#ec4899' },
   { id: 'd6', name: 'Reports',      color: '#6366f1' },
   { id: 'd7', name: 'Management',   color: '#7c3aed' },
 ];
@@ -497,6 +497,19 @@ export const DataProvider = ({ children }) => {
     return { error };
   };
 
+  const deleteSocialPost = async (postId) => {
+    if (DEMO_MODE) {
+      setDemoData(prev => ({
+        ...prev,
+        socialPosts: prev.socialPosts.filter(p => p.id !== postId)
+      }));
+      return {};
+    }
+    const { error } = await api.social.delete(postId);
+    if (!error) setSbData(prev => ({ ...prev, socialPosts: prev.socialPosts.filter(p => p.id !== postId) }));
+    return { error };
+  };
+
   const saveClientPageDetails = async (clientId, platform, details) => {
     if (DEMO_MODE) {
       setDemoData(prev => ({
@@ -643,7 +656,7 @@ export const DataProvider = ({ children }) => {
       updateTaskStatus, updateLoggedTime, updateTask, deleteTask, addClient,
       addTask, addMeeting, cancelMeeting,
       addBlogsSheetRow,
-      updateBlogsSheetRow, addSocialPost, updateSocialPost,
+      updateBlogsSheetRow, addSocialPost, updateSocialPost, deleteSocialPost,
       saveClientPageDetails, saveCalendarNote, getTasksByUser, getWorkloadLevel,
       markNotificationsRead, deleteMember,
     }}>

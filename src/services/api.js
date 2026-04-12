@@ -68,9 +68,7 @@ const api = {
       return await supabase.from('meetings').select('*, meeting_attendees(user_id)').order('date');
     },
     async create(meeting) {
-      const id = 'm' + Date.now();
       const res = await supabase.from('meetings').insert({
-        id,
         title: meeting.title.trim(),
         date: meeting.date,
         time: meeting.time,
@@ -78,11 +76,13 @@ const api = {
         client_id: meeting.clientId || null,
         status: 'scheduled',
         "desc": meeting.desc || '',
-        link: meeting.link || ''
-      });
-      if (!res.error && meeting.attendees?.length) {
+        link: meeting.link || '',
+        created_by: meeting.createdBy || null
+      }).select().single();
+      
+      if (!res.error && res.data && meeting.attendees?.length) {
         await supabase.from('meeting_attendees').insert(
-          meeting.attendees.map(uid => ({ meeting_id: id, user_id: uid }))
+          meeting.attendees.map(uid => ({ meeting_id: res.data.id, user_id: uid }))
         );
       }
       return res;
@@ -121,6 +121,9 @@ const api = {
     async updatePost(id, patch) {
       return await supabase.from('social_posts').update(patch).eq('id', id);
     },
+    async delete(id) {
+      return await supabase.from('social_posts').delete().eq('id', id);
+    },
     async savePageDetails(clientId, platform, details) {
       return await supabase.from('client_page_details').upsert({
         client_id: clientId,
@@ -158,10 +161,11 @@ const api = {
         supabase.from('calendar_notes').delete().eq('user_id', userId),
         supabase.from('notifications').delete().eq('user_id', userId),
         supabase.from('login_track').delete().eq('user_id', userId),
+        supabase.from('profiles').delete().eq('id', userId)
       ]);
-      // Finally delete the profile itself
-      const profileRes = await supabase.from('profiles').delete().eq('id', userId);
-      return profileRes;
+      const failed = results.find(r => r.status === 'rejected' || (r.value && r.value.error));
+      if (failed) return { error: failed.reason || failed.value.error };
+      return { error: null };
     }
   },
 

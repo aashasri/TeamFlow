@@ -123,7 +123,7 @@ const EditCell = ({ value, type = 'text', options = [], placeholder = '', color,
 
 /* ─── Main Component ─── */
 const SocialCalendar = ({ clientId = null, readOnly = false }) => {
-  const { data, addSocialPost, updateSocialPost } = useData();
+  const { data, addSocialPost, updateSocialPost, deleteSocialPost } = useData();
   const { user } = useAuth();
   const today = new Date();
   const [selMonth, setSelMonth] = useState(today.getMonth());
@@ -210,7 +210,7 @@ const SocialCalendar = ({ clientId = null, readOnly = false }) => {
             <tr style={{ background: '#c4f566' }}>
               <th colSpan={9}  style={{ ...thHGrp, borderRight: '2px solid #f97316' }}>📋 Content Planning</th>
               <th colSpan={6}  style={{ ...thHGrp, borderRight: '2px solid #f97316' }}>📅 Publishing Details</th>
-              <th colSpan={8}  style={thHGrp}>
+              <th colSpan={canEdit ? 9 : 8}  style={thHGrp}>
                 🔗 Links of Published Posts
                 {canEdit && <span style={{ fontSize: '0.62rem', fontWeight: 400, opacity: 0.7, marginLeft: 6 }}>(click cell to add/edit)</span>}
               </th>
@@ -227,6 +227,7 @@ const SocialCalendar = ({ clientId = null, readOnly = false }) => {
                   {PLATFORM_META[p].icon} {PLATFORM_META[p].label}
                 </th>
               ))}
+              {canEdit && <th style={{ ...thStyle, color: '#ef4444', textAlign: 'center' }}>Delete</th>}
             </tr>
           </thead>
           <tbody>
@@ -349,6 +350,12 @@ const SocialCalendar = ({ clientId = null, readOnly = false }) => {
                     />
                   </td>
                 ))}
+                {canEdit && (
+                  <td style={{ ...tdStyle, textAlign: 'center', verticalAlign: 'middle' }}>
+                    <button onClick={() => { if(window.confirm('Delete this post?')) deleteSocialPost(p.id); }} 
+                      style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#ef4444', padding: '4px 8px', borderRadius: 6, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 700 }} title="Delete Post">🗑</button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

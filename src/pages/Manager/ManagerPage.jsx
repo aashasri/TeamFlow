@@ -86,7 +86,7 @@ const DEPT_CARDS = [
   { name: 'Social Media', icon: '', color: '#0ea5e9', emoji: '' },
   { name: 'Ads', icon: '', color: '#ef4444', emoji: '' },
   { name: 'Web Dev', icon: '', color: '#f59e0b', emoji: '' },
-  { name: 'Blogs', icon: '', color: '#ec4899', emoji: '' },
+  { name: 'Bloog', icon: '', color: '#ec4899', emoji: '' },
 ];
 
 /* ── Main Component ── */

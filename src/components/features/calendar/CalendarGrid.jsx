@@ -166,9 +166,15 @@ const CalendarGrid = ({ managerView = false }) => {
             if (item.itemType === 'task') {
               const sc = STATUS_CHIP[item.status === 'done' ? 'Published' : item.status === 'inprogress' ? 'Scheduled' : 'Draft'] || STATUS_CHIP.Draft;
               return (
-                <div key={item.id} style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 12px', marginBottom: 8, border: '1px solid var(--border)' }}>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fff', marginBottom: 2 }}>📋 {item.title}</div>
-                  <div style={{ fontSize: '0.68rem', color: '#8890b0' }}>{item.assignedName} · {item.deadline}</div>
+                <div key={'t'+item.id} style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 12px', marginBottom: 8, border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fff', marginBottom: 2 }}>📋 {item.title}</div>
+                    <div style={{ fontSize: '0.68rem', color: '#8890b0' }}>{item.assignedName} · {item.deadline}</div>
+                  </div>
+                  {managerView && (
+                    <button onClick={() => { if(window.confirm('Delete this task?')) data?.deleteTask?.(item.id) }} 
+                      style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.78rem', padding: '2px 4px' }} title="Delete Plan">✕</button>
+                  )}
                 </div>
               );
             }
@@ -176,13 +182,19 @@ const CalendarGrid = ({ managerView = false }) => {
             const cc = CONTENT_COLORS[item.contentType] || '#7c3aed';
             const sc = STATUS_CHIP[item.status] || STATUS_CHIP.Draft;
             return (
-              <div key={item.id} style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 12px', marginBottom: 8, border: '1px solid var(--border)', borderLeft: `3px solid ${cc}` }}>
-                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fff', marginBottom: 2 }}>📱 {item.contentTheme || item.caption}</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
-                  <span style={{ background: cc + '22', color: cc, padding: '1px 6px', borderRadius: 99, fontSize: '0.62rem', fontWeight: 700 }}>{item.contentType}</span>
-                  <span style={{ background: sc.bg, color: sc.color, padding: '1px 6px', borderRadius: 99, fontSize: '0.62rem', fontWeight: 700 }}>{item.status}</span>
+              <div key={'p'+item.id} style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 12px', marginBottom: 8, border: '1px solid var(--border)', borderLeft: `3px solid ${cc}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fff', marginBottom: 2 }}>📱 {item.contentTheme || item.caption}</div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
+                    <span style={{ background: cc + '22', color: cc, padding: '1px 6px', borderRadius: 99, fontSize: '0.62rem', fontWeight: 700 }}>{item.contentType}</span>
+                    <span style={{ background: sc.bg, color: sc.color, padding: '1px 6px', borderRadius: 99, fontSize: '0.62rem', fontWeight: 700 }}>{item.status}</span>
+                  </div>
+                  <div style={{ fontSize: '0.65rem', color: '#8890b0', marginTop: 3 }}>{item.publishDate} · {item.publishTime}</div>
                 </div>
-                <div style={{ fontSize: '0.65rem', color: '#8890b0', marginTop: 3 }}>{item.publishDate} · {item.publishTime}</div>
+                {managerView && (
+                  <button onClick={() => { if(window.confirm('Delete this social post plan?')) data?.deleteSocialPost?.(item.id) }} 
+                    style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.78rem', padding: '2px 4px', flexShrink: 0 }} title="Delete Plan">✕</button>
+                )}
               </div>
             );
           })
