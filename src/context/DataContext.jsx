@@ -438,8 +438,22 @@ export const DataProvider = ({ children }) => {
       return { id };
     }
     const { error, data: newArray } = await api.clients.create(client);
-    // Note: api.clients.create handles ID internally
     if (!error) await loadAllData();
+    return { error };
+  };
+
+  const deleteClient = async (clientId) => {
+    if (DEMO_MODE) {
+      setDemoData(prev => ({ ...prev, clients: prev.clients.filter(c => c.id !== clientId) }));
+      return { error: null };
+    }
+    const { error } = await api.clients.delete(clientId);
+    if (!error) {
+      setSbData(prev => ({ ...prev, clients: prev.clients.filter(c => c.id !== clientId) }));
+      pushNotif({ title: '🗑 Client Deleted', body: 'Client successfully removed.', icon: '🗑' });
+    } else {
+      pushNotif({ title: '❌ Delete Failed', body: error.message || 'Could not delete client.', icon: '❌' });
+    }
     return { error };
   };
 
@@ -653,7 +667,7 @@ export const DataProvider = ({ children }) => {
     <DataContext.Provider value={{
       data, setData: DEMO_MODE ? setDemoData : setSbData,
       loading, error, refreshData: loadAllData,
-      updateTaskStatus, updateLoggedTime, updateTask, deleteTask, addClient,
+      updateTaskStatus, updateLoggedTime, updateTask, deleteTask, addClient, deleteClient,
       addTask, addMeeting, cancelMeeting,
       addBlogsSheetRow,
       updateBlogsSheetRow, addSocialPost, updateSocialPost, deleteSocialPost,

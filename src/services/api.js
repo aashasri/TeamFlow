@@ -55,6 +55,9 @@ const api = {
     },
     async update(id, patch) {
       return await supabase.from('clients').update(patch).eq('id', id);
+    },
+    async delete(id) {
+      return await supabase.from('clients').delete().eq('id', id);
     }
   },
 
@@ -72,8 +75,7 @@ const api = {
         client_id: meeting.clientId || null,
         status: 'scheduled',
         "desc": meeting.desc || '',
-        link: meeting.link || '',
-        created_by: meeting.createdBy || null
+        link: meeting.link || ''
       }).select().single();
       
       if (!res.error && res.data && meeting.attendees?.length) {

@@ -93,7 +93,7 @@ const DEPT_CARDS = [
 const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data, loading, addTask, updateTask, deleteTask, getWorkloadLevel, addSocialPost, saveClientPageDetails, addClient, deleteMember } = useData();
+  const { data, loading, addTask, updateTask, deleteTask, getWorkloadLevel, addSocialPost, saveClientPageDetails, addClient, deleteClient, deleteMember } = useData();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [showCredModal, setShowCredModal] = useState(false);
@@ -1032,11 +1032,16 @@ const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(240px,1fr))', gap: 16 }}>
                 {data.clients.map(c => (
-                  <div key={c.id} className="card clickable" style={{ padding: 16 }} onClick={() => setSelectedClientId(c.id)}>
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>{c.name}</div>
+                  <div key={c.id} className="card clickable" style={{ padding: 16, position: 'relative' }} onClick={() => setSelectedClientId(c.id)}>
+                    <div style={{ fontWeight: 700, marginBottom: 4, paddingRight: 24 }}>{c.name}</div>
                     <div style={{ fontSize: '0.78rem', color: '#8890b0', marginBottom: 10 }}>{c.project}</div>
                     <div style={{ height: 4, background: 'rgba(255,255,255,0.08)', borderRadius: 99 }}><div style={{ height: '100%', width: `${c.progress}%`, background: '#7c3aed', borderRadius: 99 }} /></div>
                     <div style={{ textAlign: 'right', fontSize: '0.72rem', color: '#7c3aed', marginTop: 4 }}>{c.progress}%</div>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); if(window.confirm('Delete this client across all data?')) deleteClient(c.id); }}
+                      style={{ position: 'absolute', top: 12, right: 12, background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.9rem' }} title="Delete Client">
+                      🗑
+                    </button>
                   </div>
                 ))}
               </div>
