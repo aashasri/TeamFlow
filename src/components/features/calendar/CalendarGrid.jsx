@@ -9,7 +9,7 @@ const STATUS_CHIP = { Published: { bg: '#10b98133', color: '#10b981' }, Schedule
 const PLATFORM_FILTERS = ['All','Instagram','Facebook','X','TikTok','GMB','Pinterest'];
 
 const CalendarGrid = ({ managerView = false }) => {
-  const { data, saveCalendarNote } = useData();
+  const { data, saveCalendarNote, deleteTask, deleteSocialPost } = useData();
   const { user } = useAuth();
   const today = new Date();
   const [currMonth, setCurrMonth] = useState(today.getMonth());
@@ -172,7 +172,7 @@ const CalendarGrid = ({ managerView = false }) => {
                     <div style={{ fontSize: '0.68rem', color: '#8890b0' }}>{item.assignedName} · {item.deadline}</div>
                   </div>
                   {managerView && (
-                    <button onClick={() => { if(window.confirm('Delete this task?')) data?.deleteTask?.(item.id) }} 
+                    <button onClick={() => { if(window.confirm('Delete this task?')) deleteTask?.(item.id) }} 
                       style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.78rem', padding: '2px 4px' }} title="Delete Plan">✕</button>
                   )}
                 </div>
@@ -192,7 +192,7 @@ const CalendarGrid = ({ managerView = false }) => {
                   <div style={{ fontSize: '0.65rem', color: '#8890b0', marginTop: 3 }}>{item.publishDate} · {item.publishTime}</div>
                 </div>
                 {managerView && (
-                  <button onClick={() => { if(window.confirm('Delete this social post plan?')) data?.deleteSocialPost?.(item.id) }} 
+                  <button onClick={() => { if(window.confirm('Delete this social post plan?')) deleteSocialPost?.(item.id) }} 
                     style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.78rem', padding: '2px 4px', flexShrink: 0 }} title="Delete Plan">✕</button>
                 )}
               </div>

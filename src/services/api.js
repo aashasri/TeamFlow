@@ -10,9 +10,7 @@ const api = {
       return await supabase.from('tasks').select('*').order('created_at', { ascending: false });
     },
     async create(task) {
-      const id = 't' + Date.now();
       const res = await supabase.from('tasks').insert({
-        id,
         title: task.title.trim(),
         "desc": task.desc?.trim(),
         assigned_to: task.assignedTo || null, // Ensure null if empty
@@ -44,9 +42,7 @@ const api = {
       return await supabase.from('clients').select('*').order('name');
     },
     async create(client) {
-      const id = 'cl' + Date.now();
       const res = await supabase.from('clients').insert({
-        id,
         name: client.name.trim(),
         project: client.project?.trim(),
         budget: client.budget || '$0',
@@ -103,9 +99,7 @@ const api = {
         .limit(100);
     },
     async createPost(post) {
-      const id = 'sp' + Date.now();
       return await supabase.from('social_posts').insert({
-        id,
         client_id: post.clientId,
         content_theme: post.contentTheme.trim(),
         content_type: post.contentType,
