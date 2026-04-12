@@ -17,6 +17,10 @@ dist-ssr
 .env.local
 .env.*.local
 
+# Database migrations — contain sensitive seed data (passwords, emails)
+supabase/migrations/
+*.sql
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
