@@ -68,6 +68,7 @@ const api = {
     },
     async create(meeting) {
       const res = await supabase.from('meetings').insert({
+        id: meeting.id || ('m' + Date.now()),
         title: meeting.title.trim(),
         date: meeting.date,
         time: meeting.time,

@@ -455,7 +455,14 @@ const MeetingList = () => {
                       }} />
                       <span style={{ position: 'absolute', right: 12, top: 12, pointerEvents: 'none', color: '#8890b0', fontSize: '1rem' }}>📅</span>
                       <input type="date" 
-                        style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 44, opacity: 0, cursor: 'pointer' }} 
+                        style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 44, opacity: 0, cursor: 'pointer', zIndex: 10 }} 
+                        onClick={(e) => {
+                          try {
+                            if (typeof e.target.showPicker === 'function') {
+                              e.target.showPicker();
+                            }
+                          } catch (err) {}
+                        }}
                         onChange={e => {
                           if (e.target.value) {
                             const [y, m, d] = e.target.value.split('-');
