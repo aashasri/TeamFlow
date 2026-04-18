@@ -150,7 +150,10 @@ export const DataProvider = ({ children }) => {
       const meetings = (meetRes.data || []).map(m => ({
         id: m.id, title: m.title, date: m.date, time: m.time, type: m.type, clientId: m.client_id,
         attendees: (m.meeting_attendees || []).map(a => a.user_id),
-        desc: m.desc || '', link: m.link || '',
+        desc: m.desc || '', link: m.link || '', status: m.status,
+        notes: (m.meeting_notes || []).map(n => ({
+          id: n.id, author: n.author, authorId: n.author_id, content: n.content, timestamp: n.timestamp
+        })).sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp))
       }));
 
       const calendarNotes = {};

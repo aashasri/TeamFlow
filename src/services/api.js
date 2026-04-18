@@ -63,8 +63,8 @@ const api = {
 
   meetings: {
     async getAll() {
-      // ⚡ CONSOLIDATION: Fetch meetings with their attendees in one request
-      return await supabase.from('meetings').select('*, meeting_attendees(user_id)').order('date');
+      // ⚡ CONSOLIDATION: Fetch meetings with their attendees and notes in one request
+      return await supabase.from('meetings').select('*, meeting_attendees(user_id), meeting_notes(*)').order('date');
     },
     async create(meeting) {
       const res = await supabase.from('meetings').insert({
