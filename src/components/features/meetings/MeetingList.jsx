@@ -448,10 +448,22 @@ const MeetingList = () => {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
                   <div><label style={lbl}>Date *</label>
-                    <input type="text" maxLength="10" placeholder="dd/mm/yyyy" className="tf-input h44" style={{ ...inp, borderColor: errors.date ? '#ef4444' : 'rgba(255,255,255,0.08)' }} value={form.date} onChange={e => {
-                      let v = e.target.value.replace(/[^\d/]/g, '');
-                      set('date', v);
-                    }} />
+                    <div style={{ position: 'relative' }}>
+                      <input type="text" maxLength="10" placeholder="dd/mm/yyyy" className="tf-input h44" style={{ ...inp, borderColor: errors.date ? '#ef4444' : 'rgba(255,255,255,0.08)', paddingRight: 36 }} value={form.date} onChange={e => {
+                        let v = e.target.value.replace(/[^\d/]/g, '');
+                        set('date', v);
+                      }} />
+                      <span style={{ position: 'absolute', right: 12, top: 12, pointerEvents: 'none', color: '#8890b0', fontSize: '1rem' }}>📅</span>
+                      <input type="date" 
+                        style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 44, opacity: 0, cursor: 'pointer' }} 
+                        onChange={e => {
+                          if (e.target.value) {
+                            const [y, m, d] = e.target.value.split('-');
+                            set('date', `${d}/${m}/${y}`);
+                          }
+                        }} 
+                      />
+                    </div>
                     {errors.date && <span className="field-error">{errors.date}</span>}
                   </div>
                   <div><label style={lbl}>Time *</label>
