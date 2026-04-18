@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useData } from '../../../context/DataContext';
 import { useAuth } from '../../../context/AuthContext';
+import { formatDate } from '../../../lib/dateUtils';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
@@ -169,7 +170,7 @@ const CalendarGrid = ({ managerView = false }) => {
                 <div key={'t'+item.id} style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 12px', marginBottom: 8, border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
                     <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fff', marginBottom: 2 }}>📋 {item.title}</div>
-                    <div style={{ fontSize: '0.68rem', color: '#8890b0' }}>{item.assignedName} · {item.deadline}</div>
+                    <div style={{ fontSize: '0.68rem', color: '#8890b0' }}>{item.assignedName} · {formatDate(item.deadline)}</div>
                   </div>
                   {managerView && (
                     <button onClick={() => { if(window.confirm('Delete this task?')) deleteTask?.(item.id) }} 
@@ -189,7 +190,7 @@ const CalendarGrid = ({ managerView = false }) => {
                     <span style={{ background: cc + '22', color: cc, padding: '1px 6px', borderRadius: 99, fontSize: '0.62rem', fontWeight: 700 }}>{item.contentType}</span>
                     <span style={{ background: sc.bg, color: sc.color, padding: '1px 6px', borderRadius: 99, fontSize: '0.62rem', fontWeight: 700 }}>{item.status}</span>
                   </div>
-                  <div style={{ fontSize: '0.65rem', color: '#8890b0', marginTop: 3 }}>{item.publishDate} · {item.publishTime}</div>
+                  <div style={{ fontSize: '0.65rem', color: '#8890b0', marginTop: 3 }}>{formatDate(item.publishDate)} · {item.publishTime}</div>
                 </div>
                 {managerView && (
                   <button onClick={() => { if(window.confirm('Delete this social post plan?')) deleteSocialPost?.(item.id) }} 

@@ -10,6 +10,7 @@ import NotepadPanel from '../../components/features/notepad/NotepadPanel';
 import SocialCalendar from '../../components/features/social/SocialCalendar';
 import BlogsSheet from '../../components/features/blogs/BlogsSheet';
 import { pushNotif, notifTemplates } from '../../lib/notifications';
+import { formatDate, formatDateTime } from '../../lib/dateUtils';
 
 const EmployeePage = ({ activePage }) => {
   const { user } = useAuth();
@@ -275,7 +276,7 @@ const EmployeePage = ({ activePage }) => {
                           <div className="tc-title" style={{ fontSize: '0.88rem' }}>{task.title}</div>
                           <div style={{ display: 'flex', gap: 8, marginTop: 8, fontSize: '0.72rem' }}>
                             <span style={{ color: task.priority === 'high' ? '#ef4444' : '#f59e0b', fontWeight: 700 }}>{task.priority.toUpperCase()}</span>
-                            <span style={{ color: '#8890b0' }}>{task.deadline}</span>
+                            <span style={{ color: '#8890b0' }}>{formatDate(task.deadline)}</span>
                           </div>
                         </div>
                       ))}
@@ -370,9 +371,9 @@ const EmployeePage = ({ activePage }) => {
 
                   {/* Meta row */}
                   <div style={{ display: 'flex', gap: 20, marginBottom: 24, fontSize: '0.82rem', color: '#8890b0', flexWrap: 'wrap' }}>
-                    <div><strong>Deadline:</strong> {liveTask?.deadline || '—'}</div>
+                    <div><strong>Deadline:</strong> {formatDate(liveTask?.deadline)}</div>
                     <div><strong>Time Logged:</strong> {Math.floor((liveTask?.loggedSeconds||0)/3600)}h {Math.floor(((liveTask?.loggedSeconds||0)%3600)/60)}m</div>
-                    {liveTask?.completedAt && <div><strong style={{ color: '#10b981' }}>Completed:</strong> {new Date(liveTask.completedAt).toLocaleString()}</div>}
+                    {liveTask?.completedAt && <div><strong style={{ color: '#10b981' }}>Completed:</strong> {formatDateTime(liveTask.completedAt)}</div>}
                   </div>
 
                   {/* Status Progress Bar */}

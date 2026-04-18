@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useData } from '../../../context/DataContext';
 import { useAuth } from '../../../context/AuthContext';
+import { formatDate } from '../../../lib/dateUtils';
 
 const BlogsSheet = () => {
   const { data, addBlogsSheetRow, updateBlogsSheetRow } = useData();
@@ -87,7 +88,7 @@ const BlogsSheet = () => {
 
           {blogs.map(b => {
              const isEditing = editingId === b.id;
-             const dStr = b.createdAt ? new Date(b.createdAt).toLocaleDateString() : 'N/A';
+             const dStr = b.createdAt ? formatDate(b.createdAt) : 'N/A';
              
              return (
               <tr key={b.id} style={{ borderBottom: '1px solid var(--border)' }}>

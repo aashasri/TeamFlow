@@ -89,6 +89,24 @@ const api = {
       const res = await supabase.from('meetings').update({ status: 'canceled' }).eq('id', id);
       if (res.error) console.error('Supabase Meeting Cancel Error:', res.error);
       return res;
+    },
+    async update(id, patch) {
+      return await supabase.from('meetings').update(patch).eq('id', id);
+    },
+    async addNote(meetingId, note) {
+      return await supabase.from('meeting_notes').insert({
+        meeting_id: meetingId,
+        author: note.author,
+        author_id: note.authorId,
+        content: note.content,
+        timestamp: note.timestamp || new Date().toISOString()
+      }).select().single();
+    },
+    async deleteNote(noteId) {
+      return await supabase.from('meeting_notes').delete().eq('id', noteId);
+    },
+    async getNotes(meetingId) {
+      return await supabase.from('meeting_notes').select('*').eq('meeting_id', meetingId).order('timestamp', { ascending: true });
     }
   },
 

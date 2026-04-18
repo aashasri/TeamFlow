@@ -2,6 +2,7 @@ import React from 'react';
 import { useData } from '../../../context/DataContext';
 import { useAuth } from '../../../context/AuthContext';
 import { pushNotif } from '../../../lib/notifications';
+import { formatDate } from '../../../lib/dateUtils';
 
 const KanbanBoard = ({ tasks, onTaskClick, viewFilter = 'all' }) => {
   const { updateTask } = useData();
@@ -80,7 +81,7 @@ const KanbanBoard = ({ tasks, onTaskClick, viewFilter = 'all' }) => {
                     ⏱️ {Math.floor(task.loggedSeconds / 3600)}h {Math.floor((task.loggedSeconds % 3600) / 60)}m
                   </div>
                 )}
-                <div className="tc-deadline">📅 {task.deadline}</div>
+                <div className="tc-deadline">📅 {formatDate(task.deadline)}</div>
               </div>
             ))}
           </div>

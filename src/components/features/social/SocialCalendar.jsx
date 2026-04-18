@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useData } from '../../../context/DataContext';
 import { useAuth } from '../../../context/AuthContext';
 import { pushNotif, notifTemplates } from '../../../lib/notifications';
+import { formatDate } from '../../../lib/dateUtils';
 
 const CONTENT_TYPES = ['Static post', 'Photo', 'Reel', 'Carousel'];
 const STATUS_OPTS   = ['Draft', 'Scheduled', 'Published'];
@@ -71,6 +72,8 @@ const EditCell = ({ value, type = 'text', options = [], placeholder = '', color,
                 onClick={e => e.stopPropagation()}>
                 🔗 {value.replace(/https?:\/\//, '').slice(0, 18)}{value.length > 25 ? '…' : ''}
               </a>
+           : type === 'date'
+            ? <span>{formatDate(value)}</span>
             : <span>{value}</span>
         }
       </div>

@@ -558,6 +558,85 @@ export const DataProvider = ({ children }) => {
     return { error: me };
   };
 
+  const updateMeeting = async (meetingId, patch) => {
+    if (DEMO_MODE) {
+      setDemoData(prev => ({
+        ...prev,
+        meetings: prev.meetings.map(m => m.id === meetingId ? { ...m, ...patch } : m)
+      }));
+      return {};
+    }
+    const { error } = await api.meetings.update(meetingId, patch);
+    if (!error) {
+      setSbData(prev => ({
+        ...prev,
+        meetings: prev.meetings.map(m => m.id === meetingId ? { ...m, ...patch } : m)
+      }));
+    }
+    return { error };
+  };
+
+  const addMeetingNote = async (meetingId, note) => {
+    const noteObj = {
+      id: 'mn' + Date.now(),
+      timestamp: new Date().toISOString(),
+      author: note.author,
+      authorId: note.authorId,
+      content: note.content,
+    };
+    if (DEMO_MODE) {
+      setDemoData(prev => ({
+        ...prev,
+        meetings: prev.meetings.map(m =>
+          m.id === meetingId
+            ? { ...m, notes: [...(m.notes || []), noteObj] }
+            : m
+        )
+      }));
+      return { data: noteObj };
+    }
+    const { data: created, error } = await api.meetings.addNote(meetingId, noteObj);
+    if (!error && created) {
+      const formatted = { id: created.id, timestamp: created.timestamp, author: created.author, authorId: created.author_id, content: created.content };
+      setSbData(prev => ({
+        ...prev,
+        meetings: prev.meetings.map(m =>
+          m.id === meetingId
+            ? { ...m, notes: [...(m.notes || []), formatted] }
+            : m
+        )
+      }));
+      return { data: formatted };
+    }
+    return { error };
+  };
+
+  const deleteMeetingNote = async (meetingId, noteId) => {
+    if (DEMO_MODE) {
+      setDemoData(prev => ({
+        ...prev,
+        meetings: prev.meetings.map(m =>
+          m.id === meetingId
+            ? { ...m, notes: (m.notes || []).filter(n => n.id !== noteId) }
+            : m
+        )
+      }));
+      return {};
+    }
+    const { error } = await api.meetings.deleteNote(noteId);
+    if (!error) {
+      setSbData(prev => ({
+        ...prev,
+        meetings: prev.meetings.map(m =>
+          m.id === meetingId
+            ? { ...m, notes: (m.notes || []).filter(n => n.id !== noteId) }
+            : m
+        )
+      }));
+    }
+    return { error };
+  };
+
   const saveCalendarNote = async (userId, dateKey, note) => {
     if (DEMO_MODE) {
       setDemoData(prev => { const un = { ...(prev.calendarNotes[userId] || {}), [dateKey]: note }; return { ...prev, calendarNotes: { ...prev.calendarNotes, [userId]: un } }; });
@@ -668,7 +747,7 @@ export const DataProvider = ({ children }) => {
       data, setData: DEMO_MODE ? setDemoData : setSbData,
       loading, error, refreshData: loadAllData,
       updateTaskStatus, updateLoggedTime, updateTask, deleteTask, addClient, deleteClient,
-      addTask, addMeeting, cancelMeeting,
+      addTask, addMeeting, cancelMeeting, updateMeeting, addMeetingNote, deleteMeetingNote,
       addBlogsSheetRow,
       updateBlogsSheetRow, addSocialPost, updateSocialPost, deleteSocialPost,
       saveClientPageDetails, saveCalendarNote, getTasksByUser, getWorkloadLevel,

@@ -6,6 +6,7 @@ import { validateTaskForm } from '../../lib/validators';
 import { taskLimiter } from '../../lib/rateLimiter';
 import { pushNotif, notifTemplates } from '../../lib/notifications';
 import { DEMO_MODE } from '../../lib/supabase';
+import { formatDate, formatDateTime } from '../../lib/dateUtils';
 import Skeleton, { CardSkeleton, TableSkeleton } from '../../components/common/Skeleton';
 import CalendarGrid from '../../components/features/calendar/CalendarGrid';
 import MeetingList from '../../components/features/meetings/MeetingList';
@@ -352,7 +353,7 @@ const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
                   <td style={{ color: '#8890b0' }}>{t.assignedName}</td>
                   <td><PBadge priority={t.priority} /></td>
                   <td><SBadge status={t.status} /></td>
-                  <td style={{ color: '#8890b0', fontSize: '0.82rem' }}>{t.deadline || '—'}</td>
+                  <td style={{ color: '#8890b0', fontSize: '0.82rem' }}>{formatDate(t.deadline)}</td>
                 </tr>
               ))}
             </tbody>
@@ -441,7 +442,7 @@ const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
       <div style={{ display: 'flex', gap: 8, fontSize: '0.72rem', color: '#8890b0' }}>
         <span>{task.assignedName}</span>
         <span>·</span>
-        <span>{task.deadline || '—'}</span>
+        <span>{formatDate(task.deadline)}</span>
       </div>
     </div>
   );
@@ -681,8 +682,8 @@ const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
                 <td style={{ color: '#8890b0', fontSize: '0.82rem' }}>{t.dept}</td>
                 <td><PBadge priority={t.priority} /></td>
                 <td><SBadge status={t.status} /></td>
-                <td style={{ fontSize: '0.78rem', color: '#8890b0' }}>{t.deadline || '—'}</td>
-                <td style={{ fontSize: '0.78rem', color: t.completedAt ? '#10b981' : '#555' }}>{t.completedAt ? new Date(t.completedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}</td>
+                <td style={{ fontSize: '0.78rem', color: '#8890b0' }}>{formatDate(t.deadline)}</td>
+                <td style={{ fontSize: '0.78rem', color: t.completedAt ? '#10b981' : '#555' }}>{t.completedAt ? formatDateTime(t.completedAt) : '—'}</td>
                 <td style={{ fontSize: '0.78rem', color: '#8890b0', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={t.feedback}>{t.feedback ? `${t.feedback}` : '—'}</td>
                 <td>
                   {t.link ? (
@@ -780,9 +781,9 @@ const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 16 }}>
                 <div><div style={{ fontSize: '0.72rem', color: '#8890b0', marginBottom: 2 }}>Assigned To</div><div style={{ fontSize: '0.88rem', fontWeight: 700 }}>{selectedTask.assignedName}</div></div>
-                <div><div style={{ fontSize: '0.72rem', color: '#8890b0', marginBottom: 2 }}>Deadline</div><div style={{ fontSize: '0.88rem', fontWeight: 700 }}>{selectedTask.deadline || '—'}</div></div>
+                <div><div style={{ fontSize: '0.72rem', color: '#8890b0', marginBottom: 2 }}>Deadline</div><div style={{ fontSize: '0.88rem', fontWeight: 700 }}>{formatDate(selectedTask.deadline)}</div></div>
                 <div><div style={{ fontSize: '0.72rem', color: '#8890b0', marginBottom: 2 }}>Department</div><div style={{ fontSize: '0.88rem', fontWeight: 700 }}>{selectedTask.dept}</div></div>
-                <div><div style={{ fontSize: '0.72rem', color: '#8890b0', marginBottom: 2 }}>Completed At</div><div style={{ fontSize: '0.88rem', fontWeight: 700, color: selectedTask.completedAt ? '#10b981' : '#555' }}>{selectedTask.completedAt ? new Date(selectedTask.completedAt).toLocaleString() : 'Not yet'}</div></div>
+                <div><div style={{ fontSize: '0.72rem', color: '#8890b0', marginBottom: 2 }}>Completed At</div><div style={{ fontSize: '0.88rem', fontWeight: 700, color: selectedTask.completedAt ? '#10b981' : '#555' }}>{selectedTask.completedAt ? formatDateTime(selectedTask.completedAt) : 'Not yet'}</div></div>
               </div>
 
               {selectedTask.link && (
@@ -855,7 +856,7 @@ const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
                             <td style={{ fontWeight: 700, color: '#fff' }}>{t.title}</td>
                             <td><PBadge priority={t.priority} /></td>
                             <td><SBadge status={t.status} /></td>
-                            <td style={{ fontSize: '0.78rem', color: '#8890b0' }}>{t.deadline || '—'}</td>
+                            <td style={{ fontSize: '0.78rem', color: '#8890b0' }}>{formatDate(t.deadline)}</td>
                             <td>{t.link ? <a href={t.link} target="_blank" rel="noopener noreferrer" style={{ color: '#0ea5e9', fontSize: '0.78rem' }}>Link</a> : '—'}</td>
                           </tr>
                         ))}
@@ -994,7 +995,7 @@ const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
                           <td style={{ color: '#8890b0' }}>{t.assignedName}</td>
                           <td style={{ color: '#8890b0' }}>{t.dept}</td>
                           <td><SBadge status={t.status} /></td>
-                          <td style={{ color: '#8890b0', fontSize: '0.82rem' }}>{t.deadline || '—'}</td>
+                          <td style={{ color: '#8890b0', fontSize: '0.82rem' }}>{formatDate(t.deadline)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1013,7 +1014,7 @@ const ManagerPage = ({ activePage, isAssignModalOpen, onCloseModal }) => {
                             <td style={{ fontWeight: 700, color: '#fff' }}>{p.contentTheme}</td>
                             <td style={{ color: '#8890b0' }}>{p.contentType}</td>
                             <td><span style={{ background: p.status === 'Published' ? '#10b98122' : '#f59e0b22', color: p.status === 'Published' ? '#10b981' : '#f59e0b', padding: '2px 8px', borderRadius: 99, fontSize: '0.72rem', fontWeight: 700 }}>{p.status}</span></td>
-                            <td style={{ color: '#8890b0', fontSize: '0.82rem' }}>{p.publishDate || '—'}</td>
+                            <td style={{ color: '#8890b0', fontSize: '0.82rem' }}>{formatDate(p.publishDate)}</td>
                             <td style={{ color: p.boost === 'Yes' ? '#10b981' : '#8890b0' }}>{p.boost}</td>
                             <td style={{ color: '#10b981', fontWeight: 700 }}>{p.budget ? `€${p.budget}` : '—'}</td>
                           </tr>
