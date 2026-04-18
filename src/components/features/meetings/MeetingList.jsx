@@ -48,13 +48,24 @@ const MeetingList = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     const errs = validateMeetingForm(form);
+    
+    let apiDate = form.date;
+    if (form.date) {
+      const parts = form.date.split('/');
+      if (parts.length === 3 && parts[2].length === 4) {
+        apiDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      } else {
+        errs.date = 'Use dd/mm/yyyy format';
+      }
+    }
+
     if (form.attendees.length === 0 && isManager) errs.attendees = 'Select at least one attendee';
     if (Object.keys(errs).length) { setErrors(errs); return; }
     const rl = meetingLimiter.check(user?.userId);
     if (!rl.allowed) { setErrors({ general: `Rate limit. Wait ${rl.waitSeconds}s.` }); return; }
     setLoading(true);
     const attendees = isManager ? form.attendees : [user.userId, ...form.attendees.filter(id => id !== user.userId)];
-    const { error } = await addMeeting({ ...form, attendees, createdBy: user?.userId });
+    const { error } = await addMeeting({ ...form, date: apiDate, attendees, createdBy: user?.userId });
     setLoading(false);
     if (error) {
       setErrors({ general: 'Failed to create meeting: ' + (error.message || 'Unknown error') });
@@ -353,7 +364,7 @@ const MeetingList = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>{isManager ? ' All Meetings' : '📅 My Schedule'}</div>
-            <button className="btn" onClick={() => { setShowForm(s => !s); if (showForm) resetForm(); }}
+            <button className="btn" onClick={() => { if (!showForm) resetForm(); setShowForm(s => !s); }}
               style={{ background: '#7c3aed', color: '#fff', fontWeight: 700, fontSize: '0.82rem', padding: '8px 18px', borderRadius: 8 }}>
               {showForm ? '✕ Cancel' : '＋ Create Meeting'}
             </button>
@@ -437,10 +448,15 @@ const MeetingList = () => {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
                   <div><label style={lbl}>Date *</label>
-                    <input type="date" className="tf-input h44" style={{ ...inp, borderColor: errors.date ? '#ef4444' : 'rgba(255,255,255,0.08)' }} value={form.date} onChange={e => set('date', e.target.value)} />
+                    <input type="text" maxLength="10" placeholder="dd/mm/yyyy" className="tf-input h44" style={{ ...inp, borderColor: errors.date ? '#ef4444' : 'rgba(255,255,255,0.08)' }} value={form.date} onChange={e => {
+                      let v = e.target.value.replace(/[^\d/]/g, '');
+                      set('date', v);
+                    }} />
+                    {errors.date && <span className="field-error">{errors.date}</span>}
                   </div>
                   <div><label style={lbl}>Time *</label>
                     <input type="time" className="tf-input h44" style={{ ...inp, borderColor: errors.time ? '#ef4444' : 'rgba(255,255,255,0.08)' }} value={form.time} onChange={e => set('time', e.target.value)} />
+                    {errors.time && <span className="field-error">{errors.time}</span>}
                   </div>
                 </div>
                 <div className="form-group mb16">
@@ -506,7 +522,7 @@ const MeetingList = () => {
                   </div>
                 );
               })}
-              <button onClick={() => setShowForm(true)} style={{ width: '100%', marginTop: 14, padding: '10px', borderRadius: 8, border: '1px dashed rgba(124,58,237,0.5)', background: 'rgba(124,58,237,0.08)', color: '#a78bfa', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={() => { resetForm(); setShowForm(true); }} style={{ width: '100%', marginTop: 14, padding: '10px', borderRadius: 8, border: '1px dashed rgba(124,58,237,0.5)', background: 'rgba(124,58,237,0.08)', color: '#a78bfa', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer' }}>
                 ＋ Schedule a Meeting
               </button>
             </div>
