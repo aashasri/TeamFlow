@@ -104,6 +104,7 @@ const api = {
     },
     async addNote(meetingId, note) {
       return await supabase.from('meeting_notes').insert({
+        id: note.id || ('n' + Date.now()),
         meeting_id: meetingId,
         author: note.author,
         author_id: note.authorId,
