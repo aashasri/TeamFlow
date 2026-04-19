@@ -359,11 +359,6 @@ const MeetingList = () => {
             <span>👥 {m.attendees.length}</span>
             <span style={{ color: m.type === 'client' ? 'var(--blue)' : '#555' }}>{m.type === 'client' ? '👔 Client' : '🏢 Internal'}</span>
           </div>
-          {m.desc && (
-            <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', marginBottom: 8, marginTop: 4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontStyle: 'italic' }}>
-              "{m.desc}"
-            </div>
-          )}
           <div style={{ display: 'flex', gap: 4 }}>
             {profiles.slice(0, 5).map(p => (
               <div key={p.id} title={p.name} style={{ width: 22, height: 22, borderRadius: '50%', background: p.color || '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.55rem', fontWeight: 800, color: '#fff' }}>{p.avatar}</div>
