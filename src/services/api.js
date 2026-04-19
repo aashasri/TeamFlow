@@ -75,7 +75,6 @@ const api = {
         time: meeting.time,
         type: meeting.type || 'internal',
         client_id: meeting.clientId || null,
-        created_by: meeting.createdBy || null,
         status: 'scheduled',
         "desc": meeting.desc || '',
         link: meeting.link || ''

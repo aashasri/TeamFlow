@@ -120,8 +120,8 @@ const MeetingList = () => {
     }
   };
 
-  // Keep selectedMeeting synced with live data
-  const liveMeeting = selectedMeeting ? data.meetings.find(m => m.id === selectedMeeting.id) : null;
+  // Keep selectedMeeting synced with live data or fallback to the new meeting object immediately
+  const liveMeeting = selectedMeeting ? (data.meetings.find(m => m.id === selectedMeeting.id) || selectedMeeting) : null;
 
   /* ═══════════════════════════════════════════════════════
      MEETING DETAIL VIEW
