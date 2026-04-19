@@ -11,6 +11,7 @@ const api = {
     },
     async create(task) {
       const res = await supabase.from('tasks').insert({
+        id: task.id || ('t' + Date.now()),
         title: task.title.trim(),
         "desc": task.desc?.trim(),
         assigned_to: task.assignedTo || null, // Ensure null if empty
