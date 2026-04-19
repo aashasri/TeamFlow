@@ -425,26 +425,7 @@ const MeetingList = () => {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {(() => {
-                const upcoming = meetDisplayList.filter(m => new Date(m.date + 'T23:59:59') >= now);
-                const past = meetDisplayList.filter(m => new Date(m.date + 'T23:59:59') < now);
-                return (
-                  <>
-                    {upcoming.length > 0 && (
-                      <>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#a78bfa', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>Upcoming</div>
-                        {upcoming.map(renderMeetingCard)}
-                      </>
-                    )}
-                    {past.length > 0 && (
-                      <>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#8890b0', textTransform: 'uppercase', letterSpacing: 1, marginTop: 24 }}>Meeting History</div>
-                        {past.map(renderMeetingCard)}
-                      </>
-                    )}
-                  </>
-                );
-              })()}
+              {meetDisplayList.map(renderMeetingCard)}
             </div>
           )}
         </div>
