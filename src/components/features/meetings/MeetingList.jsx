@@ -65,7 +65,7 @@ const MeetingList = () => {
     if (!rl.allowed) { setErrors({ general: `Rate limit. Wait ${rl.waitSeconds}s.` }); return; }
     setLoading(true);
     const attendees = isManager ? form.attendees : [user.userId, ...form.attendees.filter(id => id !== user.userId)];
-    const { error } = await addMeeting({ ...form, date: apiDate, attendees, createdBy: user?.userId });
+    const { error, data: newMeet } = await addMeeting({ ...form, date: apiDate, attendees, createdBy: user?.userId });
     setLoading(false);
     if (error) {
       setErrors({ general: 'Failed to create meeting: ' + (error.message || 'Unknown error') });
@@ -73,6 +73,7 @@ const MeetingList = () => {
     }
     resetForm();
     setShowForm(false);
+    if (newMeet) setSelectedMeeting(newMeet);
   };
 
   const handleCancel = async (meetingId) => {

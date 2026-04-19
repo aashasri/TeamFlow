@@ -553,12 +553,21 @@ export const DataProvider = ({ children }) => {
       setDemoData(prev => ({ ...prev, meetings: [...prev.meetings, newMeeting] }));
       scheduleMeetingReminders(newMeeting);
       pushNotif(notifTemplates.meetingScheduled(meeting.title, meeting.time));
-      return {};
+      return { data: newMeeting };
     }
     // API creation and status are handled by api.meetings.create
-    const { error: me } = await api.meetings.create(meeting);
+    const { error: me, data: createdMeeting } = await api.meetings.create(meeting);
     if (!me) await loadAllData();
-    return { error: me };
+    let formattedMeet = null;
+    if (createdMeeting) {
+      formattedMeet = {
+        id: createdMeeting.id, title: createdMeeting.title, date: createdMeeting.date, time: createdMeeting.time, type: createdMeeting.type, clientId: createdMeeting.client_id,
+        attendees: meeting.attendees || [],
+        desc: createdMeeting.desc || '', link: createdMeeting.link || '', status: createdMeeting.status,
+        notes: []
+      };
+    }
+    return { error: me, data: formattedMeet };
   };
 
   const updateMeeting = async (meetingId, patch) => {
