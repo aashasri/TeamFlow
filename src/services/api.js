@@ -83,7 +83,6 @@ const api = {
       if (!res.error && res.data && meeting.attendees?.length) {
         const attRes = await supabase.from('meeting_attendees').insert(
           meeting.attendees.map(uid => ({ 
-            id: 'ma' + Date.now() + Math.random().toString(36).substring(2, 6),
             meeting_id: res.data.id, 
             user_id: uid 
           }))
