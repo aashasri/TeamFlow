@@ -75,15 +75,24 @@ const api = {
         time: meeting.time,
         type: meeting.type || 'internal',
         client_id: meeting.clientId || null,
+        created_by: meeting.createdBy || null,
         status: 'scheduled',
         "desc": meeting.desc || '',
         link: meeting.link || ''
       }).select().single();
       
       if (!res.error && res.data && meeting.attendees?.length) {
-        await supabase.from('meeting_attendees').insert(
-          meeting.attendees.map(uid => ({ meeting_id: res.data.id, user_id: uid }))
+        const attRes = await supabase.from('meeting_attendees').insert(
+          meeting.attendees.map(uid => ({ 
+            id: 'ma' + Date.now() + Math.random().toString(36).substring(2, 6),
+            meeting_id: res.data.id, 
+            user_id: uid 
+          }))
         );
+        if (attRes.error) {
+          console.error('Supabase Meeting Attendees Error:', attRes.error);
+          return { error: attRes.error, data: res.data };
+        }
       }
       return res;
     },
