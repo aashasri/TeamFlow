@@ -555,9 +555,7 @@ export const DataProvider = ({ children }) => {
       pushNotif(notifTemplates.meetingScheduled(meeting.title, meeting.time));
       return { data: newMeeting };
     }
-    // API creation and status are handled by api.meetings.create
     const { error: me, data: createdMeeting } = await api.meetings.create(meeting);
-    if (!me) await loadAllData();
     let formattedMeet = null;
     if (createdMeeting) {
       formattedMeet = {
@@ -566,7 +564,16 @@ export const DataProvider = ({ children }) => {
         desc: createdMeeting.desc || '', link: createdMeeting.link || '', status: createdMeeting.status,
         notes: []
       };
+      
+      // OPTIMISTIC UI: Force it into the context immediately
+      setSbData(prev => {
+        const exists = prev.meetings.find(m => m.id === formattedMeet.id);
+        if (exists) return prev;
+        return { ...prev, meetings: [...prev.meetings, formattedMeet] };
+      });
     }
+    
+    if (!me) await loadAllData();
     return { error: me, data: formattedMeet };
   };
 
