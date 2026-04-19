@@ -73,7 +73,6 @@ const MeetingList = () => {
     }
     resetForm();
     setShowForm(false);
-    if (newMeet) setSelectedMeeting(newMeet);
   };
 
   const handleCancel = async (meetingId) => {
@@ -359,7 +358,12 @@ const MeetingList = () => {
             <span>👥 {m.attendees.length}</span>
             <span style={{ color: m.type === 'client' ? 'var(--blue)' : '#555' }}>{m.type === 'client' ? '👔 Client' : '🏢 Internal'}</span>
           </div>
-          <div style={{ display: 'flex', gap: 4 }}>
+          {m.desc && (
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', marginTop: 4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {m.desc}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 4, marginTop: 10 }}>
             {profiles.slice(0, 5).map(p => (
               <div key={p.id} title={p.name} style={{ width: 22, height: 22, borderRadius: '50%', background: p.color || '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.55rem', fontWeight: 800, color: '#fff' }}>{p.avatar}</div>
             ))}
