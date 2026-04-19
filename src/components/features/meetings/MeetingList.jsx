@@ -73,7 +73,6 @@ const MeetingList = () => {
     }
     resetForm();
     setShowForm(false);
-    if (newMeet) setSelectedMeeting(newMeet);
   };
 
   const handleCancel = async (meetingId) => {
