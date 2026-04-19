@@ -322,6 +322,54 @@ const MeetingList = () => {
   /* ═══════════════════════════════════════════════════════
      MAIN MEETINGS LIST VIEW
      ═══════════════════════════════════════════════════════ */
+  const renderMeetingCard = (m) => {
+    const d = new Date(m.date + 'T00:00:00');
+    const isPast = d < now && d.toDateString() !== now.toDateString();
+    const isToday = d.toDateString() === now.toDateString();
+    const isCanceled = m.status === 'canceled';
+    const profiles = m.attendees.map(id => data.users.find(u => u.id === id)).filter(Boolean);
+    const noteCount = (m.notes || []).length;
+    return (
+      <div key={m.id} className="card" onClick={() => setSelectedMeeting(m)}
+        style={{ 
+          padding: '16px 20px', display: 'flex', gap: 16, alignItems: 'flex-start', cursor: 'pointer',
+          opacity: (isPast || isCanceled) ? 0.5 : 1, 
+          border: isCanceled ? '1px solid #ef4444' : (isToday ? '1px solid #10b981' : '1px solid var(--border)'), 
+          boxShadow: isToday && !isCanceled ? '0 0 16px rgba(16,185,129,0.1)' : 'none',
+          background: isCanceled ? 'rgba(239,68,68,0.02)' : 'var(--bg2)',
+          transition: 'border-color 0.15s, transform 0.1s',
+        }}
+        onMouseEnter={e => { if (!isCanceled) e.currentTarget.style.borderColor = '#7c3aed55'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = isCanceled ? '#ef4444' : (isToday ? '#10b981' : 'var(--border)'); }}
+      >
+        <div style={{ width: 52, height: 52, borderRadius: 12, flexShrink: 0, background: isCanceled ? '#555' : (m.type === 'client' ? 'var(--blue)' : 'var(--accent)'), display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800 }}>
+          <div style={{ fontSize: '1.2rem', lineHeight: 1 }}>{d.getDate()}</div>
+          <div style={{ fontSize: '0.65rem', opacity: 0.85 }}>{MONTHS[d.getMonth()]}</div>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <div style={{ fontWeight: 700, fontSize: '0.95rem', color: isCanceled ? '#8890b0' : '#fff', textDecoration: isCanceled ? 'line-through' : 'none' }}>{m.title}</div>
+            {isToday && !isCanceled && <span style={{ background: '#10b98122', color: '#10b981', padding: '2px 6px', borderRadius: 4, fontSize: '0.65rem', fontWeight: 800 }}>TODAY</span>}
+            {isCanceled && <span style={{ background: '#ef444422', color: '#ef4444', padding: '2px 6px', borderRadius: 4, fontSize: '0.65rem', fontWeight: 800 }}>CANCELED</span>}
+            {noteCount > 0 && <span style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa', padding: '2px 6px', borderRadius: 4, fontSize: '0.6rem', fontWeight: 700 }}>📋 {noteCount} note{noteCount !== 1 ? 's' : ''}</span>}
+          </div>
+          <div style={{ fontSize: '0.78rem', color: '#8890b0', display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 6 }}>
+            <span>📅 {formatDate(m.date)}</span>
+            <span>⏰ {m.time}</span>
+            <span>👥 {m.attendees.length}</span>
+            <span style={{ color: m.type === 'client' ? 'var(--blue)' : '#555' }}>{m.type === 'client' ? '👔 Client' : '🏢 Internal'}</span>
+          </div>
+          <div style={{ display: 'flex', gap: 4 }}>
+            {profiles.slice(0, 5).map(p => (
+              <div key={p.id} title={p.name} style={{ width: 22, height: 22, borderRadius: '50%', background: p.color || '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.55rem', fontWeight: 800, color: '#fff' }}>{p.avatar}</div>
+            ))}
+            {profiles.length > 5 && <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#1e2035', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.55rem', color: '#8890b0' }}>+{profiles.length - 5}</div>}
+          </div>
+        </div>
+        {isPast && <span style={{ fontSize: '0.68rem', color: '#555', flexShrink: 0 }}>Past</span>}
+      </div>
+    );
+  };
   return (
     <div>
       {/* ── Upcoming Meeting Banner ── */}
@@ -378,54 +426,26 @@ const MeetingList = () => {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {meetDisplayList.map(m => {
-                const d = new Date(m.date + 'T00:00:00');
-                const isPast = d < now && d.toDateString() !== now.toDateString();
-                const isToday = d.toDateString() === now.toDateString();
-                const isCanceled = m.status === 'canceled';
-                const profiles = m.attendees.map(id => data.users.find(u => u.id === id)).filter(Boolean);
-                const noteCount = (m.notes || []).length;
+              {(() => {
+                const upcoming = meetDisplayList.filter(m => new Date(m.date + 'T23:59:59') >= now);
+                const past = meetDisplayList.filter(m => new Date(m.date + 'T23:59:59') < now);
                 return (
-                  <div key={m.id} className="card" onClick={() => setSelectedMeeting(m)}
-                    style={{ 
-                      padding: '16px 20px', display: 'flex', gap: 16, alignItems: 'flex-start', cursor: 'pointer',
-                      opacity: (isPast || isCanceled) ? 0.5 : 1, 
-                      border: isCanceled ? '1px solid #ef4444' : (isToday ? '1px solid #10b981' : '1px solid var(--border)'), 
-                      boxShadow: isToday && !isCanceled ? '0 0 16px rgba(16,185,129,0.1)' : 'none',
-                      background: isCanceled ? 'rgba(239,68,68,0.02)' : 'var(--bg2)',
-                      transition: 'border-color 0.15s, transform 0.1s',
-                    }}
-                    onMouseEnter={e => { if (!isCanceled) e.currentTarget.style.borderColor = '#7c3aed55'; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = isCanceled ? '#ef4444' : (isToday ? '#10b981' : 'var(--border)'); }}
-                  >
-                    <div style={{ width: 52, height: 52, borderRadius: 12, flexShrink: 0, background: isCanceled ? '#555' : (m.type === 'client' ? 'var(--blue)' : 'var(--accent)'), display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800 }}>
-                      <div style={{ fontSize: '1.2rem', lineHeight: 1 }}>{d.getDate()}</div>
-                      <div style={{ fontSize: '0.65rem', opacity: 0.85 }}>{MONTHS[d.getMonth()]}</div>
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.95rem', color: isCanceled ? '#8890b0' : '#fff', textDecoration: isCanceled ? 'line-through' : 'none' }}>{m.title}</div>
-                        {isToday && !isCanceled && <span style={{ background: '#10b98122', color: '#10b981', padding: '2px 6px', borderRadius: 4, fontSize: '0.65rem', fontWeight: 800 }}>TODAY</span>}
-                        {isCanceled && <span style={{ background: '#ef444422', color: '#ef4444', padding: '2px 6px', borderRadius: 4, fontSize: '0.65rem', fontWeight: 800 }}>CANCELED</span>}
-                        {noteCount > 0 && <span style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa', padding: '2px 6px', borderRadius: 4, fontSize: '0.6rem', fontWeight: 700 }}>📋 {noteCount} note{noteCount !== 1 ? 's' : ''}</span>}
-                      </div>
-                      <div style={{ fontSize: '0.78rem', color: '#8890b0', display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 6 }}>
-                        <span>📅 {formatDate(m.date)}</span>
-                        <span>⏰ {m.time}</span>
-                        <span>👥 {m.attendees.length}</span>
-                        <span style={{ color: m.type === 'client' ? 'var(--blue)' : '#555' }}>{m.type === 'client' ? '👔 Client' : '🏢 Internal'}</span>
-                      </div>
-                      <div style={{ display: 'flex', gap: 4 }}>
-                        {profiles.slice(0, 5).map(p => (
-                          <div key={p.id} title={p.name} style={{ width: 22, height: 22, borderRadius: '50%', background: p.color || '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.55rem', fontWeight: 800, color: '#fff' }}>{p.avatar}</div>
-                        ))}
-                        {profiles.length > 5 && <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#1e2035', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.55rem', color: '#8890b0' }}>+{profiles.length - 5}</div>}
-                      </div>
-                    </div>
-                    {isPast && <span style={{ fontSize: '0.68rem', color: '#555', flexShrink: 0 }}>Past</span>}
-                  </div>
+                  <>
+                    {upcoming.length > 0 && (
+                      <>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#a78bfa', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>Upcoming</div>
+                        {upcoming.map(renderMeetingCard)}
+                      </>
+                    )}
+                    {past.length > 0 && (
+                      <>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#8890b0', textTransform: 'uppercase', letterSpacing: 1, marginTop: 24 }}>Meeting History</div>
+                        {past.map(renderMeetingCard)}
+                      </>
+                    )}
+                  </>
                 );
-              })}
+              })()}
             </div>
           )}
         </div>
